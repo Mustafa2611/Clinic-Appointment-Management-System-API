@@ -1,5 +1,6 @@
 package com.example.Eyada.Models.Entities;
 
+import com.example.Eyada.Models.DTOs.DoctorDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,20 +11,36 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name= "Doctor")
-public class Doctor {
+//@Table(name= "Doctor")
+public class Doctor extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "doctor_id")
-    private Integer Id;
+    private String Specialization;
+    private int ExperienceYears;
+    private double ConsultationFee;
 
-    private String Name ;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "doctor_id")
+//    private Integer Id;
+//
+//    private String Name ;
 
-    @ManyToOne
-    @JoinColumn(name="specification_id")
-    private Specification specification;
+//    @ManyToOne
+//    @JoinColumn(name="specification_id")
+//    private Specification specification;
 
-    @ManyToMany(mappedBy = "patients")
+    @ManyToMany(mappedBy = "doctors")
     private List<Patient> patients;
+
+    @OneToMany(mappedBy = "doctor" , cascade = CascadeType.ALL)
+    private List<Appointment> appointments;
+
+//    public static Doctor toEntity(DoctorDTO dto){
+//        return Doctor.builder()
+//
+//                .Id(dto.getId())
+//                .Name(dto.getName())
+//                .specification(dto.getSpecification())
+//                .build();
+//    }
 }

@@ -16,11 +16,19 @@ public class PatientService {
     private PatientRepo patientRepo;
 
     public Patient Add(PatientDTO patientDTO){
-        Patient patient = Patient.builder().
-                Name(patientDTO.getName()).
-                Age(patientDTO.getAge()).
-                build();
-        return patientRepo.save(patient);
+        if(patientDTO == null)
+            return null;
+        Patient patient ;
+        patient = patientRepo.save(
+                 Patient.
+                 builder().
+                 Name(patientDTO.getName()).
+                 Age(patientDTO.getAge()).
+                 build()
+         );
+
+       return patient;
+
     }
 
     public Patient GetById(Integer id){

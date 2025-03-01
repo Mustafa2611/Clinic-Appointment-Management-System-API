@@ -13,24 +13,28 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name= "Patient")
+//@Table(name= "Patient")
 public class Patient {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "patient_id")
-    private Integer Id;
+    private String DateOfBirth;
+    private String Gender;
+    private String MedicalHistory;
 
-    private String Name;
-
-    private int Age;
-
-    @ManyToMany
-    @JoinTable(
-            name = "Doctor_Patient",
-            joinColumns = @JoinColumn(name = "patient_id"),
-            inverseJoinColumns = @JoinColumn(name = "doctor_id")
-    )
-    private List<Doctor> doctors;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "patient_id")
+//    private Integer Id;
+//
+//    private String Name;
+//
+//    private int Age;
+//
+//    @ManyToMany
+//    @JoinTable(
+//            name = "Doctor_Patient",
+//            joinColumns = @JoinColumn(name = "patient_id"),
+//            inverseJoinColumns = @JoinColumn(name = "doctor_id")
+//    )
+//    private List<Doctor> doctors;
 
 }
