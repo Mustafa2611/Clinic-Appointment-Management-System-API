@@ -1,58 +1,41 @@
 package com.example.Eyada.Services;
 
-import com.example.Eyada.Models.DTOs.DoctorDTO;
+import com.example.Eyada.Models.DTOs.DoctorDto;
 import com.example.Eyada.Models.Entities.Doctor;
-import com.example.Eyada.Repositories.DoctorRepo;
+import com.example.Eyada.Repositories.DoctorRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DoctorService {
-    @Autowired
-    private DoctorRepo doctorRepo;
 
-    public Doctor Add(DoctorDTO doctorDTO){
-        Doctor doctor = Doctor.builder().
-                Name(doctorDTO.getName()).
-                specification(doctorDTO.getSpecification()).
-                build();
-        doctorRepo.save(doctor);
-        return doctor;
+    private final DoctorRepository doctorRepository;
+
+    public Page<DoctorDto> getAllDoctors(Pageable pageable) {
+        return doctorRepository.findAll(pageable).map(doctor ->
+                new DoctorDto(doctor.getId(), doctor.getName(), doctor.getSpecialization(),
+                        doctor.getExperience(), doctor.getAvailability(), doctor.getContact()));
     }
 
-    public Doctor GetById(Integer id){
-        Optional<Doctor> doctor = doctorRepo.findById(id);
-        return doctor.orElse(null);
-    }
 
-    public List<Doctor> GetAll(){
-        List<Doctor> doctors = doctorRepo.findAll();
-        if(doctors.isEmpty())
-            return null;
-        else
-            return doctors;
-    }
+    public DoctorDto addDoctor(DoctorDto doctorDto) {
+        Doctor doctor = new Doctor();
+        doctor.setName(doctorDto.getName());
+        doctor.setSpecialization(doctorDto.getSpecialization());
+        doctor.setExperience(doctorDto.getExperience());
+        doctor.setAvailability(doctorDto.getAvailability());
+        doctor.setContact(doctorDto.getContact());
 
-    public Doctor Update(DoctorDTO doctorDTO){
-        Doctor doctor = Doctor.builder().
-                Id(doctorDTO.getId()).
-                Name(doctorDTO.getName()).
-                specification(doctorDTO.getSpecification()).
-                build();
-        if(doctor!=null)
-            doctorRepo.save(doctor);
-        return doctor;
-    }
-
-    public void Delete(Integer id){
-        boolean doctor_exist = doctorRepo.existsById(id);
-        if (doctor_exist)
-            doctorRepo.deleteById(id);
-        else
-            return;
+        Doctor savedDoctor = doctorRepository.save(doctor);
+        return new DoctorDto(savedDoctor.getId(), savedDoctor.getName(), savedDoctor.getSpecialization(),
+                savedDoctor.getExperience(), savedDoctor.getAvailability(), savedDoctor.getContact());
     }
 }

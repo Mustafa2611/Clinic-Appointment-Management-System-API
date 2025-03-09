@@ -1,15 +1,31 @@
 package com.example.Eyada.Controllers;
 
-import com.example.Eyada.Models.DTOs.PatientDTO;
-import com.example.Eyada.Models.Entities.Patient;
+import com.example.Eyada.Models.DTOs.PatientDto;
 import com.example.Eyada.Services.PatientService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/api/patients")
+@RequiredArgsConstructor
+public class PatientController {
+
+    private final PatientService patientService;
+
+    @GetMapping
+    public ResponseEntity<List<PatientDto>> getAllPatients() {
+        return ResponseEntity.ok(patientService.getAllPatients());
+    }
+
+    @PostMapping
+    public ResponseEntity<PatientDto> addPatient(@RequestBody PatientDto patientDto) {
+        return ResponseEntity.ok(patientService.addPatient(patientDto));
+    }
+}
+/*
 @RestController
 @RequestMapping("/Patient")
 public class PatientController {
@@ -18,7 +34,7 @@ public class PatientController {
 
     @PostMapping
     @RequestMapping("/add")
-    public ResponseEntity<String> AddPatient(@RequestBody PatientDTO dto){
+    public ResponseEntity<String> AddPatient(@RequestBody PatientDto dto){
         if(dto == null)
             return ResponseEntity.badRequest().body("Invalid Data entered");
         Patient patient = patientService.Add(dto);
@@ -56,7 +72,7 @@ public class PatientController {
 
     @PutMapping
     @RequestMapping("/update")
-    public ResponseEntity<String> Update(@RequestBody PatientDTO dto){
+    public ResponseEntity<String> Update(@RequestBody PatientDto dto){
         Patient patient = patientService.Update(dto);
         if(patient == null)
             return ResponseEntity.badRequest().body("Invalid data");
@@ -79,3 +95,4 @@ public class PatientController {
              return ResponseEntity.badRequest().body("Patient with id "+id+" not found.");
     }
 }
+*/

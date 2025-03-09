@@ -1,40 +1,30 @@
 package com.example.Eyada.Models.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.List;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-//@Table(name= "Patient")
+@Table(name = "patients")
 public class Patient {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String DateOfBirth;
-    private String Gender;
-    private String MedicalHistory;
+    @Column(nullable = false)
+    private String name;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "patient_id")
-//    private Integer Id;
-//
-//    private String Name;
-//
-//    private int Age;
-//
-//    @ManyToMany
-//    @JoinTable(
-//            name = "Doctor_Patient",
-//            joinColumns = @JoinColumn(name = "patient_id"),
-//            inverseJoinColumns = @JoinColumn(name = "doctor_id")
-//    )
-//    private List<Doctor> doctors;
+    @Column(nullable = false, unique = true)
+    private String email;
 
+    @Column(nullable = false)
+    private String contact;
+
+    private int age;
+
+    private String medicalHistory; // Optional
 }

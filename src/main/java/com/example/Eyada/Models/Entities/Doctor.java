@@ -1,46 +1,32 @@
 package com.example.Eyada.Models.Entities;
 
-import com.example.Eyada.Models.DTOs.DoctorDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-//@Table(name= "Doctor")
-public class Doctor extends User {
+@Table(name = "doctors")
+public class Doctor extends BaseEntity{
 
-    private String Specialization;
-    private int ExperienceYears;
-    private double ConsultationFee;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "doctor_id")
-//    private Integer Id;
-//
-//    private String Name ;
+    @Column(nullable = false)
+    private String name;
 
-//    @ManyToOne
-//    @JoinColumn(name="specification_id")
-//    private Specification specification;
+    @Column(nullable = false)
+    private String specialization;
 
-    @ManyToMany(mappedBy = "doctors")
-    private List<Patient> patients;
+    @Column(nullable = false)
+    private int experience; // in years
 
-    @OneToMany(mappedBy = "doctor" , cascade = CascadeType.ALL)
-    private List<Appointment> appointments;
+    @Column(nullable = false)
+    private String availability; // Example: "Mon-Fri 9 AM - 5 PM"
 
-//    public static Doctor toEntity(DoctorDTO dto){
-//        return Doctor.builder()
-//
-//                .Id(dto.getId())
-//                .Name(dto.getName())
-//                .specification(dto.getSpecification())
-//                .build();
-//    }
+    @Column(nullable = false)
+    private String contact;
 }

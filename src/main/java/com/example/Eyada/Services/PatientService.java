@@ -1,59 +1,39 @@
 package com.example.Eyada.Services;
 
-import com.example.Eyada.Models.DTOs.PatientDTO;
-import com.example.Eyada.Models.Entities.Doctor;
+import com.example.Eyada.Models.DTOs.PatientDto;
 import com.example.Eyada.Models.Entities.Patient;
-import com.example.Eyada.Repositories.PatientRepo;
+import com.example.Eyada.Repositories.PatientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PatientService {
-    @Autowired
-    private PatientRepo patientRepo;
 
-    public Patient Add(PatientDTO patientDTO){
-        if(patientDTO == null)
-            return null;
-        Patient patient ;
-        patient = patientRepo.save(
-                 Patient.
-                 builder().
-                 Name(patientDTO.getName()).
-                 Age(patientDTO.getAge()).
-                 build()
-         );
+    private final PatientRepository patientRepository;
 
-       return patient;
-
+    public List<PatientDto> getAllPatients() {
+        return patientRepository.findAll().stream()
+                .map(patient -> new PatientDto(patient.getId(), patient.getName(), patient.getEmail(),
+                        patient.getContact(), patient.getAge(), patient.getMedicalHistory()))
+                .collect(Collectors.toList());
     }
 
-    public Patient GetById(Integer id){
-        Optional<Patient> patient = patientRepo.findById(id);
-        return patient.orElse(null);
-    }
+    public PatientDto addPatient(PatientDto patientDto) {
+        Patient patient = new Patient();
+        patient.setName(patientDto.getName());
+        patient.setEmail(patientDto.getEmail());
+        patient.setContact(patientDto.getContact());
+        patient.setAge(patientDto.getAge());
+        patient.setMedicalHistory(patientDto.getMedicalHistory());
 
-    public List<Patient> GetAll(){
-        return patientRepo.findAll();
-    }
-
-    public Patient Update(PatientDTO patientDTO){
-        Patient patient = Patient.builder().
-                Id(patientDTO.getId()).
-                Name(patientDTO.getName()).
-                Age(patientDTO.getAge()).
-                build();
-        return patientRepo.save(patient);
-    }
-
-    public void Delete(Integer id){
-        if(patientRepo.existsById(id))
-            patientRepo.deleteById(id);
-        else
-            return;
-
+        Patient savedPatient = patientRepository.save(patient);
+        return new PatientDto(savedPatient.getId(), savedPatient.getName(), savedPatient.getEmail(),
+                savedPatient.getContact(), savedPatient.getAge(), savedPatient.getMedicalHistory());
     }
 }

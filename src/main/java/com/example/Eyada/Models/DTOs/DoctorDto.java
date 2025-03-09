@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatientDTO {
-    private Integer Id;
 
-    private String Name;
-
-    private int Age;
+public class DoctorDto {
+    private Long id;
+    private String name;
+    private String specialization;
+    private int experience;
+    private String availability;
+    private String contact;
 }
