@@ -9,11 +9,11 @@ import com.example.Eyada.Repositories.AppointmentRepository;
 import com.example.Eyada.Repositories.DoctorRepository;
 import com.example.Eyada.Repositories.PatientRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,87 +24,109 @@ public class AppointmentService {
     private final PatientRepository patientRepository;
 
     @Transactional
-    public AppointmentResponseDto bookAppointment(AppointmentRequestDto requestDto) {
+    public AppointmentResponseDto bookAppointment(@NotNull AppointmentRequestDto requestDto) {
         Doctor doctor = doctorRepository.findById(requestDto.getDoctorId())
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
         Patient patient = patientRepository.findById(requestDto.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
-        Appointment appointment = new Appointment();
-        appointment.setDoctor(doctor);
-        appointment.setPatient(patient);
-        appointment.setAppointmentDate(requestDto.getAppointmentDate());
+        Appointment appointment = Appointment.fromDto(requestDto);
         appointment.setStatus(AppointmentStatus.PENDING);
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
-        return new AppointmentResponseDto(savedAppointment.getId(),
-                new DoctorDto(doctor.getId(), doctor.getName(), doctor.getSpecialization(),
-                        doctor.getExperience(), doctor.getAvailability(), doctor.getContact()),
-                new PatientDto(patient.getId(), patient.getName(), patient.getEmail(),
-                        patient.getContact(), patient.getAge(), patient.getMedicalHistory()),
+        return new AppointmentResponseDto(
+                savedAppointment.getId(),
+                new DoctorDto(
+                        doctor.getId(),
+                        doctor.getName(),
+                        doctor.getSpecialization(),
+                        doctor.getExperience(),
+                        doctor.getAvailability(),
+                        doctor.getContact()
+                ),
+                new PatientDto(
+                        patient.getId(),
+                        patient.getName(),
+                        patient.getEmail(),
+                        patient.getContact(),
+                        patient.getAge(),
+                        patient.getMedicalHistory()
+                ),
                 savedAppointment.getAppointmentDate(),
-                savedAppointment.getStatus());
+                savedAppointment.getStatus()
+        );
     }
 
     public List<AppointmentResponseDto> getAppointmentsByDoctor(Long doctorId) {
-        return appointmentRepository.findByDoctorId(doctorId).stream()
-                .map(appointment -> new AppointmentResponseDto(
-                        appointment.getId(),
-                        new DoctorDto(appointment.getDoctor().getId(), appointment.getDoctor().getName(),
-                                appointment.getDoctor().getSpecialization(), appointment.getDoctor().getExperience(),
-                                appointment.getDoctor().getAvailability(), appointment.getDoctor().getContact()),
-                        new PatientDto(appointment.getPatient().getId(), appointment.getPatient().getName(),
-                                appointment.getPatient().getEmail(), appointment.getPatient().getContact(),
-                                appointment.getPatient().getAge(), appointment.getPatient().getMedicalHistory()),
-                        appointment.getAppointmentDate(),
-                        appointment.getStatus()))
-                .collect(Collectors.toList());
+        return appointmentRepository.findByDoctorId(doctorId)
+                .stream()
+                .map(
+                        appointment -> new AppointmentResponseDto(
+                            appointment.getId(),
+                            new DoctorDto(
+                                    appointment.getDoctor().getId(),
+                                    appointment.getDoctor().getName(),
+                                    appointment.getDoctor().getSpecialization(),
+                                    appointment.getDoctor().getExperience(),
+                                    appointment.getDoctor().getAvailability(),
+                                    appointment.getDoctor().getContact()),
+                            new PatientDto(
+                                    appointment.getPatient().getId(),
+                                    appointment.getPatient().getName(),
+                                    appointment.getPatient().getEmail(),
+                                    appointment.getPatient().getContact(),
+                                    appointment.getPatient().getAge(),
+                                    appointment.getPatient().getMedicalHistory()
+                            ),
+                            appointment.getAppointmentDate(),
+                            appointment.getStatus()
+                        )
+                )
+                .toList();
+    }
+
+    public AppointmentDto updateAppointment(@NotNull AppointmentDto appointmentDto){
+        Doctor doctor = doctorRepository.findById(appointmentDto.getDoctorId())
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
+        Patient patient = patientRepository.findById(appointmentDto.getPatientId())
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+
+        Appointment appointment = Appointment.fromDto(appointmentDto, doctor, patient );
+        appointment.setStatus(AppointmentStatus.PENDING);
+
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        return new AppointmentDto(
+                savedAppointment.getId(),
+                new DoctorDto(
+                        doctor.getId(),
+                        doctor.getName(),
+                        doctor.getSpecialization(),
+                        doctor.getExperience(),
+                        doctor.getAvailability(),
+                        doctor.getContact()
+                ).getId(),
+                new PatientDto(
+                        patient.getId(),
+                        patient.getName(),
+                        patient.getEmail(),
+                        patient.getContact(),
+                        patient.getAge(),
+                        patient.getMedicalHistory()
+                ).getId(),
+                savedAppointment.getAppointmentDate(),
+                savedAppointment.getStatus()
+        );
+    }
+
+    public Boolean deleteAppointment(Long id){
+        if(appointmentRepository.findById(id).isPresent()){
+            appointmentRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
-//@Service
-//public class AppointmentService {
-//    @Autowired
-//    private AppointmentRepository appointmentRepository;
-//    @Autowired
-//    private DoctorRepository doctorRepository;
-//
-//    public Appointment Add(AppointmentDTO dto){
-//        if(doctorRepository.existsById(dto.getDoctorId()))
-//        {
-//           return appointmentRepository.save(Appointment.toEntit(dto)); // appointment id not initialized yet
-//        }
-//        else
-//            return null;
-//    }
-//
-//    public AppointmentDTO GetById(Integer id){
-//        if(appointmentRepository.existsById(id)){
-//            return AppointmentDTO.toDTO(appointmentRepository.findById(id).orElse(null));
-//        }
-//        else
-//            return null;
-//    }
-//
-//    public List<Appointment> GetAll(){
-//        List<Appointment> appointments = appointmentRepository.findAll();
-//        return appointments;
-//    }
-//
-//    public Appointment Update(AppointmentDTO dto){
-//        if(doctorRepository.existsById(dto.getDoctorId()))
-//        {
-//            return appointmentRepository.save(Appointment.toEntit(dto)); // appointment id not initialized yet
-//        }
-//        else
-//            return null;
-//    }
-//
-//    public boolean Delete (Integer id){
-//        appointmentRepository.deleteById(id);
-//        if(!appointmentRepository.existsById(id))
-//            return true;
-//        else
-//            return false;
-//    }
-//}

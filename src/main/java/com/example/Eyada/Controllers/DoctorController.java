@@ -3,6 +3,7 @@ package com.example.Eyada.Controllers;
 import com.example.Eyada.Models.DTOs.DoctorDto;
 import com.example.Eyada.Services.DoctorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,8 @@ public class DoctorController {
     @GetMapping
     public ResponseEntity<Page<DoctorDto>> getAllDoctors(@RequestParam(defaultValue = "0") int page,
                                                          @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(doctorService.getAllDoctors(PageRequest.of(page, size)));
+        Page<DoctorDto> doctorDtos =doctorService.getAllDoctors(PageRequest.of(page, size));
+        return ResponseEntity.ok(doctorDtos);
     }
 
     @PostMapping

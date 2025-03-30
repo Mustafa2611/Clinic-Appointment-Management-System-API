@@ -13,7 +13,14 @@ public class UserService {
     private final UserRepository userRepository;
 
     public Optional<UserDto> findUserByEmail(String email) {
-        return userRepository.findByEmail(email).map(user ->
-                new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole()));
+        return userRepository.findByEmail(email)
+                .map(user -> new
+                        UserDto(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getRole()
+                        )
+                );
     }
 }

@@ -13,18 +13,38 @@ import lombok.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(
+            name = "id",
+            updatable = false
+    )
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(
+            name = "email",
+            nullable = false,
+            columnDefinition = "TEXT",
+            unique = true
+    )
     private String email;
 
-    @Column(nullable = false)
+    @Column(
+            name = "password",
+            nullable = false
+    )
     private String password;
 
-    @Column(nullable = false)
+    @Column(
+            name = "name",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(
+            name = "role",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
     private Role role; // PATIENT, DOCTOR, ADMIN
 }
