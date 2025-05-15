@@ -1,5 +1,6 @@
 package com.example.Eyada.Controllers;
 
+import com.example.Eyada.Models.DTOs.AppointmentDto;
 import com.example.Eyada.Models.DTOs.AppointmentRequestDto;
 import com.example.Eyada.Models.DTOs.AppointmentResponseDto;
 import com.example.Eyada.Services.AppointmentService;
@@ -24,5 +25,15 @@ public class AppointmentController {
     @GetMapping("/doctor/{doctorId}")
     public ResponseEntity<List<AppointmentResponseDto>> getAppointmentsByDoctor(@PathVariable Long doctorId) {
         return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor(doctorId));
+    }
+
+    @GetMapping
+    public ResponseEntity<AppointmentDto> updateAppointment(@RequestBody AppointmentDto appointmentDto){
+        return ResponseEntity.ok(appointmentService.updateAppointment(appointmentDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<Boolean> deleteAppointment(@RequestParam Long appointmentId){
+        return ResponseEntity.ok(appointmentService.deleteAppointment(appointmentId));
     }
 }

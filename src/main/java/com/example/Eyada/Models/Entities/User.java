@@ -1,5 +1,6 @@
 package com.example.Eyada.Models.Entities;
 
+import com.example.Eyada.Models.DTOs.UserDto;
 import com.example.Eyada.Models.Enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -47,4 +48,22 @@ public class User {
             columnDefinition = "TEXT"
     )
     private Role role; // PATIENT, DOCTOR, ADMIN
+
+    public User(String email, String password, String name, Role role) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.role = role;
+    }
+
+
+    public static User fromDto(UserDto dto){
+        return new User(
+                dto.getName(),
+                dto.getEmail(),
+                dto.getPassword(),
+                dto.getRole()
+        );
+    }
+
 }

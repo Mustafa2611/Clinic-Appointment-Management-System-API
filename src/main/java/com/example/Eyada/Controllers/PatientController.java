@@ -3,6 +3,8 @@ package com.example.Eyada.Controllers;
 import com.example.Eyada.Models.DTOs.PatientDto;
 import com.example.Eyada.Services.PatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,14 +17,26 @@ public class PatientController {
 
     private final PatientService patientService;
 
-    @GetMapping
-    public ResponseEntity<List<PatientDto>> getAllPatients() {
-        return ResponseEntity.ok(patientService.getAllPatients());
-    }
 
     @PostMapping
     public ResponseEntity<PatientDto> addPatient(@RequestBody PatientDto patientDto) {
         return ResponseEntity.ok(patientService.addPatient(patientDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<PatientDto>> getAllPatients(@RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(patientService.getAllPatients(PageRequest.of(page,size)));
+    }
+
+    @GetMapping
+    public ResponseEntity<PatientDto> updatePatient(@RequestBody PatientDto patientDto){
+        return ResponseEntity.ok(patientService.updatePatient(patientDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<Boolean> deletePatient(@RequestParam Long patientId){
+        return ResponseEntity.ok(patientService.deletePatient(patientId));
     }
 }
 /*

@@ -3,13 +3,13 @@ package com.example.Eyada.Controllers;
 import com.example.Eyada.Models.DTOs.DoctorDto;
 import com.example.Eyada.Services.DoctorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/doctors")
 @RequiredArgsConstructor
@@ -24,9 +24,27 @@ public class DoctorController {
         return ResponseEntity.ok(doctorDtos);
     }
 
+    @GetMapping(path="{id}")
+//    @RequestMapping("/get_doctor_by_id")
+    public ResponseEntity<Optional<DoctorDto>> getDoctorById(@PathVariable Long id) {
+        Optional<DoctorDto> doctorDto = doctorService.getDoctorById(id);
+        return ResponseEntity.ok(doctorDto);
+    }
+
+
     @PostMapping
     public ResponseEntity<DoctorDto> addDoctor(@RequestBody DoctorDto doctorDto) {
         return ResponseEntity.ok(doctorService.addDoctor(doctorDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<DoctorDto> updateDoctor(@RequestBody DoctorDto doctorDto){
+        return ResponseEntity.ok(doctorService.updateDoctor(doctorDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<Boolean> deleteDoctor(@RequestParam Long doctorId){
+        return ResponseEntity.ok(doctorService.deleteDoctor(doctorId));
     }
 }
 /*

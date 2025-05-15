@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,18 @@ public class DoctorService {
                 savedDoctor.getAvailability(),
                 savedDoctor.getContact()
         );
+    }
+
+    public Optional<DoctorDto> getDoctorById(Long id){
+        return doctorRepository.findById(id)
+                .map( doctor -> new DoctorDto(
+                        doctor.getId(),
+                        doctor.getName(),
+                        doctor.getSpecialization(),
+                        doctor.getExperience(),
+                        doctor.getAvailability(),
+                        doctor.getContact()
+                ));
     }
 
     public Page<DoctorDto> getAllDoctors(Pageable pageable) {

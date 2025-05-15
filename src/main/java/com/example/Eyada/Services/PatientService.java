@@ -5,6 +5,8 @@ import com.example.Eyada.Models.Entities.Patient;
 import com.example.Eyada.Repositories.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +33,9 @@ public class PatientService {
         );
     }
 
-    public List<PatientDto> getAllPatients() {
-        return patientRepository.findAll().stream()
+
+    public Page<PatientDto> getAllPatients(Pageable pageable) {
+        return patientRepository.findAll(pageable)
                 .map( patient -> new PatientDto(
                                 patient.getId(),
                                 patient.getName(),
@@ -41,9 +44,11 @@ public class PatientService {
                                 patient.getAge(),
                                 patient.getMedicalHistory()
                         )
-                )
-                .toList();
+                );
     }
+
+
+
 
     public PatientDto updatePatient(@NotNull PatientDto patientDto){
         Patient patient = Patient.fromDto(patientDto);
